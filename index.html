@@ -1,0 +1,819 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fakir Apparels Limited - Wash Plant Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a3a8f 0%, #2d5cc2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .app-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .date-time {
+            font-size: 0.9rem;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        .instructions {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #2d5cc2;
+        }
+
+        .instructions h3 {
+            color: #2d5cc2;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        thead {
+            background-color: #2d5cc2;
+            color: white;
+        }
+
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafe;
+        }
+
+        td {
+            padding: 12px 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2d5cc2;
+            box-shadow: 0 0 0 2px rgba(45, 92, 194, 0.2);
+        }
+
+        .readonly {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .backlog-positive {
+            color: #d32f2f;
+            font-weight: 700;
+        }
+
+        .backlog-zero {
+            color: #388e3c;
+            font-weight: 700;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 200px;
+            max-width: 100%;
+        }
+
+        .btn-primary {
+            background-color: #2d5cc2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1a3a8f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 58, 143, 0.3);
+        }
+
+        .btn-success {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 142, 60, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #757575;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #616161;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(117, 117, 117, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        .report-preview {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .report-preview h3 {
+            color: #2d5cc2;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                min-width: 100%;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .company-name {
+                font-size: 1.5rem;
+            }
+            
+            .app-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            header {
+                padding: 12px 15px;
+            }
+            
+            .container {
+                padding: 0 5px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.85rem;
+            }
+            
+            input {
+                padding: 8px 6px;
+                font-size: 0.85rem;
+            }
+            
+            .btn {
+                padding: 12px 18px;
+                font-size: 0.95rem;
+            }
+        }
+
+        .row-count {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2d5cc2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="company-name">Fakir Apparels Limited</div>
+            <div class="app-title">Wash Plant Receive Delivery Balance Report</div>
+            <div class="date-time" id="currentDateTime"></div>
+        </header>
+
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How to use this app:</h3>
+            <ul>
+                <li>Tap on any cell to enter data</li>
+                <li>Add new rows with the "Add New Row" button</li>
+                <li>The Backlog column calculates automatically (Received - Delivered)</li>
+                <li>Generate a PDF report with the "Generate PDF Report" button</li>
+                <li>Clear all data with the "Clear All Data" button</li>
+            </ul>
+        </div>
+
+        <div class="row-count" id="rowCount">Total Rows: 1</div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>APM Name</th>
+                        <th>Buyer</th>
+                        <th>Order #</th>
+                        <th>Style</th>
+                        <th>Color</th>
+                        <th>Received Balance</th>
+                        <th>Delivered Balance</th>
+                        <th>Backlog</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Rows will be added here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" id="addRowBtn">
+                <i class="fas fa-plus-circle"></i> Add New Row
+            </button>
+            <button class="btn btn-success" id="generateReportBtn">
+                <i class="fas fa-file-pdf"></i> Generate PDF Report
+            </button>
+            <button class="btn btn-secondary" id="clearAllBtn">
+                <i class="fas fa-trash-alt"></i> Clear All Data
+            </button>
+        </div>
+
+        <div class="report-preview" id="reportPreview">
+            <h3><i class="fas fa-file-pdf"></i> PDF Report Generated</h3>
+            <p style="text-align: center; color: #4caf50; font-weight: 600;">
+                <i class="fas fa-check-circle"></i> PDF report has been generated and downloaded.
+            </p>
+            <div style="text-align: center; margin-top: 15px;">
+                <button id="openPdfBtn" class="btn btn-primary" style="padding: 10px 20px;">
+                    <i class="fas fa-external-link-alt"></i> Open PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Fakir Apparels Limited &copy; <span id="currentYear"></span> | Wash Plant Receive Delivery Balance Report System</p>
+            <p>Designed for mobile use | All data is stored locally on your device</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const tableBody = document.getElementById('tableBody');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const currentDateTime = document.getElementById('currentDateTime');
+        const rowCount = document.getElementById('rowCount');
+        const reportPreview = document.getElementById('reportPreview');
+        const currentYear = document.getElementById('currentYear');
+        const openPdfBtn = document.getElementById('openPdfBtn');
+
+        // Initialize table with one empty row
+        function initializeTable() {
+            addNewRow();
+            updateRowCount();
+            updateDateTime();
+            
+            // Set current year in footer
+            currentYear.textContent = new Date().getFullYear();
+            
+            // Load any saved data from localStorage
+            loadSavedData();
+        }
+
+        // Add a new row to the table
+        function addNewRow() {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="data-input" data-field="apm" placeholder="Enter APM name"></td>
+                <td><input type="text" class="data-input" data-field="buyer" placeholder="Enter buyer"></td>
+                <td><input type="text" class="data-input" data-field="order" placeholder="Enter order #"></td>
+                <td><input type="text" class="data-input" data-field="style" placeholder="Enter style"></td>
+                <td><input type="text" class="data-input" data-field="color" placeholder="Enter color"></td>
+                <td><input type="number" class="data-input numeric" data-field="received" placeholder="0" min="0" value="0"></td>
+                <td><input type="number" class="data-input numeric" data-field="delivered" placeholder="0" min="0" value="0"></td>
+                <td><div class="readonly backlog-value" data-field="backlog">0</div></td>
+            `;
+            
+            tableBody.appendChild(row);
+            
+            // Add event listeners to the new inputs
+            const inputs = row.querySelectorAll('.data-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', handleInputChange);
+                input.addEventListener('change', saveDataToStorage);
+            });
+            
+            updateRowCount();
+            saveDataToStorage();
+        }
+
+        // Handle input changes, especially for numeric fields to calculate backlog
+        function handleInputChange(event) {
+            const input = event.target;
+            const row = input.closest('tr');
+            
+            if (input.classList.contains('numeric')) {
+                calculateBacklog(row);
+            }
+        }
+
+        // Calculate backlog for a row
+        function calculateBacklog(row) {
+            const receivedInput = row.querySelector('input[data-field="received"]');
+            const deliveredInput = row.querySelector('input[data-field="delivered"]');
+            const backlogElement = row.querySelector('.backlog-value');
+            
+            const received = parseFloat(receivedInput.value) || 0;
+            const delivered = parseFloat(deliveredInput.value) || 0;
+            const backlog = received - delivered;
+            
+            backlogElement.textContent = backlog;
+            
+            // Style based on backlog value
+            if (backlog > 0) {
+                backlogElement.className = 'readonly backlog-value backlog-positive';
+            } else if (backlog === 0) {
+                backlogElement.className = 'readonly backlog-value backlog-zero';
+            } else {
+                backlogElement.className = 'readonly backlog-value';
+            }
+        }
+
+        // Update the row count display
+        function updateRowCount() {
+            const rows = tableBody.querySelectorAll('tr');
+            rowCount.textContent = `Total Rows: ${rows.length}`;
+        }
+
+        // Update the date and time display
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            currentDateTime.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Save all table data to localStorage
+        function saveDataToStorage() {
+            const rows = tableBody.querySelectorAll('tr');
+            const data = [];
+            
+            rows.forEach(row => {
+                const rowData = {};
+                const inputs = row.querySelectorAll('.data-input');
+                
+                inputs.forEach(input => {
+                    const field = input.getAttribute('data-field');
+                    rowData[field] = input.value;
+                });
+                
+                // Get backlog value
+                const backlogElement = row.querySelector('.backlog-value');
+                rowData.backlog = backlogElement.textContent;
+                
+                data.push(rowData);
+            });
+            
+            localStorage.setItem('washPlantReportData', JSON.stringify(data));
+        }
+
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem('washPlantReportData');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                // Clear existing rows except the first one
+                const existingRows = tableBody.querySelectorAll('tr');
+                if (existingRows.length > 0) {
+                    for (let i = 1; i < existingRows.length; i++) {
+                        existingRows[i].remove();
+                    }
+                }
+                
+                // Populate first row with first data item
+                if (data.length > 0) {
+                    const firstRow = tableBody.querySelector('tr');
+                    populateRow(firstRow, data[0]);
+                    
+                    // Add additional rows for remaining data
+                    for (let i = 1; i < data.length; i++) {
+                        addNewRow();
+                        const newRow = tableBody.lastChild;
+                        populateRow(newRow, data[i]);
+                    }
+                }
+                
+                updateRowCount();
+            }
+        }
+
+        // Populate a row with data
+        function populateRow(row, rowData) {
+            const inputs = row.querySelectorAll('.data-input');
+            
+            inputs.forEach(input => {
+                const field = input.getAttribute('data-field');
+                if (rowData[field] !== undefined) {
+                    input.value = rowData[field];
+                }
+            });
+            
+            // Calculate backlog for the row
+            calculateBacklog(row);
+        }
+
+        // Clear all data from the table
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+                // Remove all rows
+                tableBody.innerHTML = '';
+                
+                // Add one empty row
+                addNewRow();
+                
+                // Clear localStorage
+                localStorage.removeItem('washPlantReportData');
+                
+                // Hide report preview
+                reportPreview.style.display = 'none';
+            }
+        }
+
+        // Generate PDF report with table fitted to page
+        async function generatePDFReport() {
+            // Show the preview section
+            reportPreview.style.display = 'block';
+            
+            // Get all rows data
+            const rows = tableBody.querySelectorAll('tr');
+            const tableData = [];
+            
+            rows.forEach(row => {
+                const rowData = {};
+                const inputs = row.querySelectorAll('.data-input');
+                
+                inputs.forEach(input => {
+                    const field = input.getAttribute('data-field');
+                    rowData[field] = input.value || '';
+                });
+                
+                // Get backlog value
+                const backlogElement = row.querySelector('.backlog-value');
+                rowData.backlog = backlogElement ? backlogElement.textContent : '0';
+                
+                tableData.push(rowData);
+            });
+            
+            // Prepare data for PDF
+            const pdfData = tableData.map(row => [
+                row.apm || '',
+                row.buyer || '',
+                row.order || '',
+                row.style || '',
+                row.color || '',
+                row.received || '0',
+                row.delivered || '0',
+                row.backlog || '0'
+            ]);
+            
+            // Calculate totals
+            let totalReceived = 0;
+            let totalDelivered = 0;
+            let totalBacklog = 0;
+            
+            tableData.forEach(row => {
+                totalReceived += parseFloat(row.received) || 0;
+                totalDelivered += parseFloat(row.delivered) || 0;
+                totalBacklog += parseFloat(row.backlog) || 0;
+            });
+            
+            // Create PDF with landscape orientation
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Set document properties
+            doc.setProperties({
+                title: 'Wash Plant Receive Delivery Balance Report',
+                subject: 'Fakir Apparels Limited',
+                author: 'Washing Plant System',
+                keywords: 'wash, plant, report, balance',
+                creator: 'Fakir Apparels Limited'
+            });
+            
+            // Add header on each page
+            const addHeader = () => {
+                doc.setFillColor(26, 58, 143);
+                doc.rect(0, 0, 297, 20, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Fakir Apparels Limited', 148, 10, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.text('Wash Plant Receive Delivery Balance Report', 148, 16, { align: 'center' });
+                
+                doc.setFontSize(9);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, 10, 27);
+                doc.text(`Total Rows: ${rows.length}`, 287, 27, { align: 'right' });
+                
+                // Reset text color
+                doc.setTextColor(0, 0, 0);
+            };
+            
+            // Add footer on each page with the requested text
+            const addFooter = (pageNumber, totalPages) => {
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Fakir Apparels Ltd | Washing Plant', 20, 200);
+                doc.text(`Page ${pageNumber} of ${totalPages}`, 148, 200, { align: 'center' });
+                doc.text('Software Designed By NAIMUR RASHID, Ex. Washing Plant', 277, 200, { align: 'right' });
+                doc.setTextColor(0, 0, 0);
+            };
+            
+            // Define table columns
+            const columns = [
+                { header: 'APM Name', dataKey: 'apm' },
+                { header: 'Buyer', dataKey: 'buyer' },
+                { header: 'Order #', dataKey: 'order' },
+                { header: 'Style', dataKey: 'style' },
+                { header: 'Color', dataKey: 'color' },
+                { header: 'Received Balance', dataKey: 'received' },
+                { header: 'Delivered Balance', dataKey: 'delivered' },
+                { header: 'Backlog', dataKey: 'backlog' }
+            ];
+            
+            // Prepare table body
+            const body = pdfData;
+            
+            // Add summary row
+            const summaryRow = [
+                'TOTAL',
+                '',
+                '',
+                '',
+                '',
+                totalReceived.toString(),
+                totalDelivered.toString(),
+                totalBacklog.toString()
+            ];
+            
+            // Configure table to fit page width
+            const tableConfig = {
+                head: [columns.map(col => col.header)],
+                body: [...body, summaryRow],
+                startY: 30,
+                margin: { top: 30, right: 5, bottom: 25, left: 5 },
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    overflow: 'linebreak',
+                    cellWidth: 'auto'
+                },
+                headStyles: {
+                    fillColor: [45, 92, 194],
+                    textColor: 255,
+                    fontStyle: 'bold',
+                    halign: 'center',
+                    fontSize: 9
+                },
+                bodyStyles: {
+                    textColor: 0,
+                    fillColor: 255,
+                    fontSize: 8
+                },
+                alternateRowStyles: {
+                    fillColor: [249, 249, 249]
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // APM Name
+                    1: { cellWidth: 22 }, // Buyer
+                    2: { cellWidth: 18 }, // Order #
+                    3: { cellWidth: 22 }, // Style
+                    4: { cellWidth: 18 }, // Color
+                    5: { cellWidth: 20, halign: 'right' }, // Received Balance
+                    6: { cellWidth: 20, halign: 'right' }, // Delivered Balance
+                    7: { 
+                        cellWidth: 18, 
+                        halign: 'right',
+                        cellStyles: {
+                            backlog: (cell, row) => {
+                                const value = parseFloat(cell.raw) || 0;
+                                if (value > 0) {
+                                    return { textColor: [211, 47, 47], fontStyle: 'bold' }; // Red for positive backlog
+                                } else if (value === 0) {
+                                    return { textColor: [56, 142, 60], fontStyle: 'bold' }; // Green for zero backlog
+                                }
+                                return { textColor: [0, 0, 0] }; // Black for negative
+                            }
+                        }
+                    }
+                },
+                tableWidth: 'auto', // Fit to page width
+                didDrawPage: (data) => {
+                    addHeader();
+                    const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
+                    const totalPages = doc.internal.getNumberOfPages();
+                    addFooter(pageNumber, totalPages);
+                    
+                    // Highlight summary row
+                    if (data.cursor && data.cursor.y > 170) {
+                        doc.setFillColor(255, 248, 220);
+                        doc.rect(data.settings.margin.left, data.cursor.y - 2, 
+                               data.table.width, 8, 'F');
+                        doc.setFont('helvetica', 'bold');
+                        doc.setTextColor(0, 0, 0);
+                        doc.text('TOTAL SUMMARY', data.settings.margin.left + 5, data.cursor.y + 4);
+                    }
+                },
+                willDrawCell: (data) => {
+                    // Color backlog cells
+                    if (data.column.index === 7 && data.row.index < body.length) {
+                        const value = parseFloat(data.cell.raw) || 0;
+                        if (value > 0) {
+                            doc.setTextColor(211, 47, 47);
+                            doc.setFont('helvetica', 'bold');
+                        } else if (value === 0) {
+                            doc.setTextColor(56, 142, 60);
+                            doc.setFont('helvetica', 'bold');
+                        } else {
+                            doc.setTextColor(0, 0, 0);
+                        }
+                    }
+                    
+                    // Highlight summary row
+                    if (data.row.index === body.length) {
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFillColor(255, 248, 220);
+                        doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, 'F');
+                    }
+                },
+                // Auto adjust table to fit page width
+                tableLineWidth: 0.1,
+                tableLineColor: [200, 200, 200]
+            };
+            
+            // Generate the table
+            doc.autoTable(tableConfig);
+            
+            // Save the PDF
+            const fileName = `Fakir_Wash_Plant_Report_${new Date().toISOString().slice(0,10)}.pdf`;
+            doc.save(fileName);
+            
+            // Create blob for opening
+            const pdfBlob = doc.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            
+            // Set up open button
+            openPdfBtn.onclick = () => {
+                window.open(pdfUrl, '_blank');
+            };
+            
+            // Scroll to preview
+            reportPreview.scrollIntoView({ behavior: 'smooth' });
+            
+            // Clean up URL after use
+            setTimeout(() => {
+                URL.revokeObjectURL(pdfUrl);
+            }, 10000);
+        }
+
+        // Event Listeners
+        addRowBtn.addEventListener('click', addNewRow);
+        
+        generateReportBtn.addEventListener('click', generatePDFReport);
+        
+        clearAllBtn.addEventListener('click', clearAllData);
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', initializeTable);
+        
+        // Update time every minute
+        setInterval(updateDateTime, 60000);
+    </script>
+</body>
+</html>
